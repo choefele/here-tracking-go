@@ -9,6 +9,10 @@ import (
 	"net/url"
 )
 
+const (
+	defaultBaseURL = "https://tracking.api.here.com/"
+)
+
 type Client struct {
 	httpClient *http.Client
 	BaseURL    *url.URL
@@ -16,11 +20,15 @@ type Client struct {
 	Ingestion *IngestionService
 }
 
-func NewClient(httpClient *http.Client) *Client {
+func NewClient() *Client {
+	return newClientWithParameters(nil)
+}
+
+func newClientWithParameters(httpClient *http.Client) *Client {
 	if httpClient == nil {
 		httpClient = http.DefaultClient
 	}
-	baseURL, _ := url.Parse("https://tracking.api.here.com/")
+	baseURL, _ := url.Parse(defaultBaseURL)
 	c := &Client{httpClient: httpClient, BaseURL: baseURL}
 	c.Ingestion = &IngestionService{&service{client: c, path: "/v2"}}
 
