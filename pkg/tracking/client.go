@@ -40,7 +40,6 @@ func (c *Client) newRequest(method string, path string, body interface{}) (*http
 	if err != nil {
 		return nil, err
 	}
-	u := c.BaseURL.ResolveReference(pathURL)
 
 	var buf io.ReadWriter
 	if body != nil {
@@ -53,7 +52,8 @@ func (c *Client) newRequest(method string, path string, body interface{}) (*http
 		}
 	}
 
-	req, err := http.NewRequest(method, u.String(), buf)
+	url := c.BaseURL.ResolveReference(pathURL)
+	req, err := http.NewRequest(method, url.String(), buf)
 	if err != nil {
 		return nil, err
 	}
