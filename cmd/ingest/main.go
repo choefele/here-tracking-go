@@ -10,5 +10,5 @@ import (
 func main() {
 	client := tracking.NewClient()
 	h, e := client.Ingestion.Health(context.Background())
-	fmt.Printf("Health: %v, error: %v\n", *h.Message, e)
+	fmt.Printf("Health: %v, error: %v\n", h.Message, e)
 }

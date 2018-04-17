@@ -11,7 +11,7 @@ type service struct {
 }
 
 type Health struct {
-	Message *string `json:"message,omitempty"`
+	Message string `json:"message,omitempty"`
 }
 
 func (s *service) Health(ctx context.Context) (*Health, error) {
