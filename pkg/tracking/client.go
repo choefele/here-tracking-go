@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	defaultBaseURL = "https://tracking.api.here.com/"
+	defaultBaseURL = "https://tracking.api.here.com"
 )
 
 type Client struct {
@@ -21,18 +21,28 @@ type Client struct {
 }
 
 func NewClient() *Client {
-	return newClientWithParameters(nil)
+	c, _ := newClientWithParameters(nil, nil)
+	return c
 }
 
-func newClientWithParameters(httpClient *http.Client) *Client {
+func newClientWithParameters(httpClient *http.Client, baseURL *string) (*Client, error) {
 	if httpClient == nil {
 		httpClient = http.DefaultClient
 	}
-	baseURL, _ := url.Parse(defaultBaseURL)
-	c := &Client{httpClient: httpClient, BaseURL: baseURL}
+	baseURLAsString := defaultBaseURL
+	if baseURL != nil {
+		baseURLAsString = *baseURL
+	}
+
+	url, err := url.Parse(baseURLAsString)
+	if err != nil {
+		return nil, err
+	}
+
+	c := &Client{httpClient: httpClient, BaseURL: url}
 	c.Ingestion = &IngestionService{&service{client: c, path: "/v2"}}
 
-	return c
+	return c, nil
 }
 
 func (c *Client) newRequest(method string, path string, body interface{}) (*http.Request, error) {
