@@ -1,9 +1,13 @@
 package tracking
 
 import (
+	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
+	"net/http"
 	"net/url"
+	"reflect"
 	"testing"
 )
 
@@ -67,5 +71,47 @@ func TestNewRequest_badURL(t *testing.T) {
 	}
 	if err, ok := err.(*url.Error); !ok || err.Op != "parse" {
 		t.Errorf("Expected URL parse error, got %+v", err)
+	}
+}
+
+func TestDo(t *testing.T) {
+	client, mux, teardown := setupTestServer()
+	defer teardown()
+
+	type foo struct {
+		A string
+	}
+
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		fmt.Fprint(w, `{"A":"a"}`)
+	})
+
+	req, _ := client.newRequest("GET", ".", nil)
+	body := new(foo)
+	client.do(context.Background(), req, body)
+
+	want := &foo{"a"}
+	if !reflect.DeepEqual(body, want) {
+		t.Errorf("Response body = %v, want %v", body, want)
+	}
+}
+
+func TestDo_httpError(t *testing.T) {
+	client, mux, teardown := setupTestServer()
+	defer teardown()
+
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, "Bad Request", 400)
+	})
+
+	req, _ := client.newRequest("GET", ".", nil)
+	resp, err := client.do(context.Background(), req, nil)
+
+	if err == nil {
+		t.Fatal("Expected HTTP 400 error, got no error.")
+	}
+	if resp.StatusCode != 400 {
+		t.Errorf("Expected HTTP 400 error, got %d status code.", resp.StatusCode)
 	}
 }
