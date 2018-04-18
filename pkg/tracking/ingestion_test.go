@@ -19,6 +19,7 @@ func TestIngestion(t *testing.T) {
 		t.Errorf("Ingestion service path is %v, want %v", got, want)
 	}
 }
+
 func TestIngestion_Send(t *testing.T) {
 	client, mux, teardown := setupTestServer()
 	defer teardown()

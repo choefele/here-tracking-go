@@ -26,11 +26,32 @@ func (s *IngestionService) Send(ctx context.Context, data *DataRequest) (*Health
 		return nil, err
 	}
 
-	health := new(Health)
-	_, err = s.client.do(ctx, req, health)
+	body := new(Health)
+	_, err = s.client.do(ctx, req, body)
 	if err != nil {
 		return nil, err
 	}
 
-	return health, nil
+	return body, nil
+}
+
+type Token struct {
+	AccessToken string `json:"accessToken,omitempty"`
+	// ExpiresIn   time.Time `json:"expiresIn,omitempty"`
+}
+
+func (s *IngestionService) Token(ctx context.Context, deviceID string, deviceSecret string) (*Token, error) {
+	path := path.Join(s.path, "/token")
+	req, err := s.client.newRequest("POST", path, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	body := new(Token)
+	_, err = s.client.do(ctx, req, body)
+	if err != nil {
+		return nil, err
+	}
+
+	return body, nil
 }
