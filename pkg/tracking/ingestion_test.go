@@ -42,6 +42,6 @@ func TestIngestion_Send(t *testing.T) {
 	}
 	want := &Health{Message: "healthy"}
 	if !reflect.DeepEqual(got, want) {
-		t.Errorf("Response body = %v, want %v", got, want)
+		t.Errorf("Response is %v, want %v", got, want)
 	}
 }

@@ -88,12 +88,12 @@ func TestDo(t *testing.T) {
 	})
 
 	req, _ := client.newRequest("GET", ".", nil)
-	body := new(foo)
-	client.do(context.Background(), req, body)
+	got := new(foo)
+	client.do(context.Background(), req, got)
 
 	want := &foo{"a"}
-	if !reflect.DeepEqual(body, want) {
-		t.Errorf("Response body = %v, want %v", body, want)
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("Response is %v, want %v", got, want)
 	}
 }
 
