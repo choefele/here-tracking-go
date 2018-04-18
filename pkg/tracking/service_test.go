@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"path"
+	"reflect"
 	"testing"
 )
 
@@ -18,12 +19,12 @@ func TestService_Health(t *testing.T) {
 		fmt.Fprint(w, `{"message":"healthy"}`)
 	})
 
-	health, err := service.Health(context.Background())
+	got, err := service.Health(context.Background())
 	if err != nil {
 		t.Errorf("Service.Health returned error: %v", err)
-	} else {
-		if got, want := health.Message, "healthy"; got != want {
-			t.Errorf("Service.Health returned %v, want %v", got, want)
-		}
+	}
+	want := &Health{Message: "healthy"}
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("Response body = %v, want %v", got, want)
 	}
 }
