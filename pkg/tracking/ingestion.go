@@ -3,6 +3,7 @@ package tracking
 import (
 	"context"
 	"path"
+	"time"
 )
 
 type IngestionService struct {
@@ -46,6 +47,14 @@ func (s *IngestionService) Token(ctx context.Context, deviceID string, deviceSec
 	if err != nil {
 		return nil, err
 	}
+
+	// Authorization
+	timestamp := time.Now().Unix()
+	parameterString := parameterString(deviceID, "0123456789", timestamp)
+	baseString := baseString(*s.client.BaseURL, s.path, parameterString)
+	baseSignature := baseSignature(baseString, deviceSecret)
+	authorizationValue := authorizationValue(deviceID, "0123456789", timestamp, baseSignature)
+	req.Header.Set("Authorization", authorizationValue)
 
 	body := new(Token)
 	_, err = s.client.do(ctx, req, body)
