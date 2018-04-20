@@ -77,7 +77,7 @@ func (s *IngestionService) Token(ctx context.Context, deviceID string, deviceSec
 	timestamp := time.Now().Unix()
 	nonce := "0123456789"
 	parameterString := parameterString(deviceID, nonce, timestamp)
-	baseString := baseString(*s.client.BaseURL, s.path, parameterString)
+	baseString := baseString(s.client.BaseURL, s.path, parameterString)
 	baseSignature := baseSignature(baseString, deviceSecret)
 	authorizationValue := authorizationValue(deviceID, nonce, timestamp, baseSignature)
 	req.Header.Set("Authorization", authorizationValue)

@@ -15,32 +15,28 @@ const (
 
 type Client struct {
 	httpClient  *http.Client
-	BaseURL     *url.URL
+	BaseURL     url.URL
 	AccessToken *string
 
 	Ingestion *IngestionService
 }
 
 func NewClient() *Client {
-	c, _ := newClientWithParameters(nil, nil)
+	c, _ := newClientWithParameters(nil, defaultBaseURL)
 	return c
 }
 
-func newClientWithParameters(httpClient *http.Client, baseURL *string) (*Client, error) {
+func newClientWithParameters(httpClient *http.Client, baseURL string) (*Client, error) {
 	if httpClient == nil {
 		httpClient = http.DefaultClient
 	}
-	baseURLAsString := defaultBaseURL
-	if baseURL != nil {
-		baseURLAsString = *baseURL
-	}
 
-	url, err := url.Parse(baseURLAsString)
+	url, err := url.Parse(baseURL)
 	if err != nil {
 		return nil, err
 	}
 
-	c := &Client{httpClient: httpClient, BaseURL: url}
+	c := &Client{httpClient: httpClient, BaseURL: *url}
 	c.Ingestion = &IngestionService{&service{client: c, path: "/v2"}}
 
 	return c, nil

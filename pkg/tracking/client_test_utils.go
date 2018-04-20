@@ -13,7 +13,7 @@ import (
 func setupTestServer() (client *Client, mux *http.ServeMux, teardown func()) {
 	mux = http.NewServeMux()
 	server := httptest.NewServer(mux)
-	client, _ = newClientWithParameters(nil, &server.URL)
+	client, _ = newClientWithParameters(nil, server.URL)
 
 	return client, mux, server.Close
 }
