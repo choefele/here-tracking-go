@@ -43,6 +43,21 @@ func newClientWithParameters(httpClient *http.Client, baseURL string) (*Client, 
 }
 
 func (c *Client) newRequest(method string, path string, body interface{}) (*http.Request, error) {
+func (c *Client) request(ctx context.Context, request *request, response *response) error {
+	req, err := c.newRequest(request.method, request.path, request.body, request.headers)
+	if err != nil {
+		return err
+	}
+
+	_, err = c.do(ctx, req, response.body)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c *Client) newRequest(method string, path string, body interface{}, headers map[string]string) (*http.Request, error) {
 	pathURL, err := url.Parse(path)
 	if err != nil {
 		return nil, err
@@ -71,6 +86,10 @@ func (c *Client) newRequest(method string, path string, body interface{}) (*http
 
 	if c.AccessToken != nil {
 		req.Header.Set("Authorization", "Bearer "+*c.AccessToken)
+	}
+
+	for key, value := range headers {
+		req.Header.Set(key, value)
 	}
 
 	return req, nil

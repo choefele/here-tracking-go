@@ -25,19 +25,23 @@ type Position struct {
 }
 
 func (s *IngestionService) Send(ctx context.Context, data []*DataRequest) (*Health, error) {
-	path := path.Join(s.path, "") + "/" // trailing slash is important
-	req, err := s.client.newRequest("POST", path, data)
+	result := new(Health)
+	err := s.client.request(
+		ctx,
+		&request{
+			path:   path.Join(s.path, "") + "/", // trailing slash is important
+			method: "POST",
+			body:   data,
+		},
+		&response{
+			body: result,
+		},
+	)
+
 	if err != nil {
 		return nil, err
 	}
-
-	body := new(Health)
-	_, err = s.client.do(ctx, req, body)
-	if err != nil {
-		return nil, err
-	}
-
-	return body, nil
+	return result, nil
 }
 
 type Token struct {
@@ -67,26 +71,30 @@ func (t Time) MarshalJSON() ([]byte, error) {
 }
 
 func (s *IngestionService) Token(ctx context.Context, deviceID string, deviceSecret string) (*Token, error) {
-	path := path.Join(s.path, "/token")
-	req, err := s.client.newRequest("POST", path, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	// Authorization
+	// Authorization header
 	timestamp := time.Now().Unix()
 	nonce := "0123456789"
 	parameterString := parameterString(deviceID, nonce, timestamp)
 	baseString := baseString(s.client.BaseURL, s.path, parameterString)
 	baseSignature := baseSignature(baseString, deviceSecret)
 	authorizationValue := authorizationValue(deviceID, nonce, timestamp, baseSignature)
-	req.Header.Set("Authorization", authorizationValue)
+	headers := map[string]string{"Authorization": authorizationValue}
 
-	body := new(Token)
-	_, err = s.client.do(ctx, req, body)
+	result := new(Token)
+	err := s.client.request(
+		ctx,
+		&request{
+			path:    path.Join(s.path, "/token"),
+			method:  "POST",
+			headers: headers,
+		},
+		&response{
+			body: result,
+		},
+	)
+
 	if err != nil {
 		return nil, err
 	}
-
-	return body, nil
+	return result, nil
 }

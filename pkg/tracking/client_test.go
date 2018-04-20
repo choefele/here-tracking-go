@@ -32,7 +32,7 @@ func TestNewRequest(t *testing.T) {
 		"a": 3711,
 		"b": "2138",
 	}
-	req, _ := c.newRequest("GET", "path", in)
+	req, _ := c.newRequest("GET", "path", in, nil)
 	body, _ := ioutil.ReadAll(req.Body)
 
 	if got, want := req.URL.String(), "https://tracking.api.here.com/path"; got != want {
@@ -52,7 +52,7 @@ func TestNewRequest_invalidJSON(t *testing.T) {
 	type T struct {
 		A map[interface{}]interface{}
 	}
-	_, err := c.newRequest("GET", ".", &T{})
+	_, err := c.newRequest("GET", ".", &T{}, nil)
 
 	if err == nil {
 		t.Error("Expected error to be returned.")
@@ -64,7 +64,7 @@ func TestNewRequest_invalidJSON(t *testing.T) {
 
 func TestNewRequest_badURL(t *testing.T) {
 	c := NewClient()
-	_, err := c.newRequest("GET", ":", nil)
+	_, err := c.newRequest("GET", ":", nil, nil)
 
 	if err == nil {
 		t.Error("Expected error to be returned.")
@@ -79,7 +79,7 @@ func TestNewRequest_authorization(t *testing.T) {
 
 	token := "token"
 	c.AccessToken = &token
-	r, _ := c.newRequest("GET", ".", nil)
+	r, _ := c.newRequest("GET", ".", nil, nil)
 
 	testHeader(t, r, "Authorization", "Bearer token")
 }
@@ -97,7 +97,7 @@ func TestDo(t *testing.T) {
 		fmt.Fprint(w, `{"A":"a"}`)
 	})
 
-	req, _ := client.newRequest("GET", ".", nil)
+	req, _ := client.newRequest("GET", ".", nil, nil)
 	got := new(foo)
 	client.do(context.Background(), req, got)
 
@@ -115,7 +115,7 @@ func TestDo_httpError(t *testing.T) {
 		http.Error(w, "Bad Request", 400)
 	})
 
-	req, _ := client.newRequest("GET", ".", nil)
+	req, _ := client.newRequest("GET", ".", nil, nil)
 	resp, err := client.do(context.Background(), req, nil)
 
 	if err == nil {
