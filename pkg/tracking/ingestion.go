@@ -26,7 +26,7 @@ type Position struct {
 
 func (s *IngestionService) Send(ctx context.Context, data []*DataRequest) (*Health, error) {
 	result := new(Health)
-	err := s.client.request(
+	err := s.client.authorizedClient().request(
 		ctx,
 		&request{
 			path:   path.Join(s.path, "") + "/", // trailing slash is important

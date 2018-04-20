@@ -14,19 +14,21 @@ const (
 )
 
 type Client struct {
-	httpClient  *http.Client
-	BaseURL     url.URL
-	AccessToken *string
+	httpClient   *http.Client
+	BaseURL      url.URL
+	AccessToken  *string
+	DeviceID     string
+	DeviceSecret string
 
 	Ingestion *IngestionService
 }
 
-func NewClient() *Client {
-	c, _ := newClientWithParameters(nil, defaultBaseURL)
+func NewClient(deviceID string, deviceSecret string) *Client {
+	c, _ := newClientWithParameters(nil, defaultBaseURL, deviceID, deviceSecret)
 	return c
 }
 
-func newClientWithParameters(httpClient *http.Client, baseURL string) (*Client, error) {
+func newClientWithParameters(httpClient *http.Client, baseURL string, deviceID string, deviceSecret string) (*Client, error) {
 	if httpClient == nil {
 		httpClient = http.DefaultClient
 	}
@@ -36,13 +38,32 @@ func newClientWithParameters(httpClient *http.Client, baseURL string) (*Client, 
 		return nil, err
 	}
 
-	c := &Client{httpClient: httpClient, BaseURL: *url}
+	c := &Client{httpClient: httpClient, BaseURL: *url, DeviceID: deviceID, DeviceSecret: deviceSecret}
 	c.Ingestion = &IngestionService{&service{client: c, path: "/v2"}}
 
 	return c, nil
 }
 
-func (c *Client) newRequest(method string, path string, body interface{}) (*http.Request, error) {
+func (c *Client) authorizedClient() requester {
+	return requesterFunc(func(ctx context.Context, request *request, response *response) error {
+		if c.AccessToken == nil {
+			token, err := c.Ingestion.Token(ctx, c.DeviceID, c.DeviceSecret)
+			if err != nil {
+				return err
+			}
+
+			c.AccessToken = &token.AccessToken
+		}
+
+		if request.headers == nil {
+			request.headers = map[string]string{}
+		}
+		request.headers["Authorization"] = "Bearer " + *c.AccessToken
+
+		return c.request(ctx, request, response)
+	})
+}
+
 func (c *Client) request(ctx context.Context, request *request, response *response) error {
 	req, err := c.newRequest(request.method, request.path, request.body, request.headers)
 	if err != nil {
@@ -82,10 +103,6 @@ func (c *Client) newRequest(method string, path string, body interface{}, header
 
 	if body != nil {
 		req.Header.Set("Content-Type", "application/json")
-	}
-
-	if c.AccessToken != nil {
-		req.Header.Set("Authorization", "Bearer "+*c.AccessToken)
 	}
 
 	for key, value := range headers {

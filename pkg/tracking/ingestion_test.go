@@ -12,7 +12,7 @@ import (
 )
 
 func TestIngestion(t *testing.T) {
-	c := NewClient()
+	c := NewClient("", "")
 
 	if got := c.Ingestion.client; got == nil {
 		t.Errorf("Ingestion service client is nil")
