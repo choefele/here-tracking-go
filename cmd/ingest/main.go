@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/choefele/here-tracking-go/pkg/tracking"
 )
@@ -19,13 +20,15 @@ func main() {
 	)
 	fmt.Printf("Token: %v, error: %v\n", t, e)
 
-	// dr := &tracking.DataRequest{
-	// 	Position: &tracking.Position{
-	// 		Lat:      52,
-	// 		Lng:      13,
-	// 		Accuracy: 100,
-	// 	},
-	// }
-	// d, e := client.Ingestion.Send(context.Background(), dr)
-	// fmt.Printf("Send: %v, error: %v\n", d, e)
+	dr := &tracking.DataRequest{
+		Timestamp: tracking.Time{Time: time.Now()},
+		Position: &tracking.Position{
+			Lat:      52,
+			Lng:      13,
+			Accuracy: 100,
+		},
+	}
+	client.AccessToken = &t.AccessToken
+	d, e := client.Ingestion.Send(context.Background(), []*tracking.DataRequest{dr})
+	fmt.Printf("Send: %v, error: %v\n", d, e)
 }

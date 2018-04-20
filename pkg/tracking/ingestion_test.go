@@ -28,18 +28,19 @@ func TestIngestion_Send(t *testing.T) {
 
 	mux.HandleFunc(path.Join(client.Ingestion.path, "")+"/", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "POST")
-		testBody(t, r, `{"position":{"lat":52,"lng":13,"accuracy":100}}`+"\n")
+		testBody(t, r, `[{"position":{"lat":52,"lng":13,"accuracy":100},"timestamp":86399}]`+"\n")
 		fmt.Fprint(w, `{"message":"healthy"}`)
 	})
 
 	dr := &DataRequest{
+		Timestamp: Time{Time: time.Unix(0, 86399*int64(time.Millisecond))},
 		Position: &Position{
 			Lat:      52,
 			Lng:      13,
 			Accuracy: 100,
 		},
 	}
-	got, err := client.Ingestion.Send(context.Background(), dr)
+	got, err := client.Ingestion.Send(context.Background(), []*DataRequest{dr})
 	if err != nil {
 		t.Errorf("Ingestion.Send returned error: %v", err)
 	}
@@ -68,7 +69,7 @@ func TestIngestion_Token(t *testing.T) {
 	if err != nil {
 		t.Errorf("Ingestion.Token returned error: %v", err)
 	}
-	want := &Token{AccessToken: "accessToken", ExpiresIn: Time(time.Unix(0, 86399*int64(time.Millisecond)))}
+	want := &Token{AccessToken: "accessToken", ExpiresIn: Time{Time: time.Unix(0, 86399*int64(time.Millisecond))}}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("Response is %v, want %v", got, want)
 	}

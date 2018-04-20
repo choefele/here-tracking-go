@@ -14,8 +14,9 @@ const (
 )
 
 type Client struct {
-	httpClient *http.Client
-	BaseURL    *url.URL
+	httpClient  *http.Client
+	BaseURL     *url.URL
+	AccessToken *string
 
 	Ingestion *IngestionService
 }
@@ -71,6 +72,11 @@ func (c *Client) newRequest(method string, path string, body interface{}) (*http
 	if body != nil {
 		req.Header.Set("Content-Type", "application/json")
 	}
+
+	if c.AccessToken != nil {
+		// req.Header.Set("Authorization", "Bearer "+*c.AccessToken)
+	}
+
 	return req, nil
 }
 

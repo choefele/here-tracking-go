@@ -74,6 +74,16 @@ func TestNewRequest_badURL(t *testing.T) {
 	}
 }
 
+func TestNewRequest_authorization(t *testing.T) {
+	c := NewClient()
+
+	token := "token"
+	c.AccessToken = &token
+	r, _ := c.newRequest("GET", ".", nil)
+
+	testHeader(t, r, "Authorization", "Bearer token")
+}
+
 func TestDo(t *testing.T) {
 	client, mux, teardown := setupTestServer()
 	defer teardown()
