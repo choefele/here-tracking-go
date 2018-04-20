@@ -20,7 +20,7 @@ func setupTestServer() (client *Client, mux *http.ServeMux, teardown func()) {
 
 func testMethod(t *testing.T, r *http.Request, want string) {
 	if got := r.Method; got != want {
-		t.Errorf("Request method: %v, want %v", got, want)
+		t.Errorf("Request method is %v, want %v", got, want)
 	}
 }
 
@@ -30,6 +30,12 @@ func testBody(t *testing.T, r *http.Request, want string) {
 		t.Errorf("Error reading request body: %v", err)
 	}
 	if got := string(b); got != want {
-		t.Errorf("request Body is %s, want %s", got, want)
+		t.Errorf("Request body is %s, want %s", got, want)
+	}
+}
+
+func testHeader(t *testing.T, r *http.Request, header string, want string) {
+	if got := r.Header.Get(header); got != want {
+		t.Errorf("Header value for %q is %q, want %q", header, got, want)
 	}
 }

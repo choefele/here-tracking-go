@@ -49,9 +49,6 @@ func TestAuthorizationValue(t *testing.T) {
 		"HUm/KJYtAWTIUEUvumh8t9QNmydBNdIv85PnxzHtU8U=",
 	)
 
-	// nonce + 0?
-	// remove final " from signature
-
 	want := "OAuth realm=\"IoT\",oauth_consumer_key=\"9d9c31be-dd5d-40b1-95af-7d5375c39561\",oauth_nonce=\"0123456789\",oauth_signature_method=\"HMAC-SHA256\",oauth_timestamp=\"1513634609\",oauth_version=\"1.0\",oauth_signature=\"HUm%2FKJYtAWTIUEUvumh8t9QNmydBNdIv85PnxzHtU8U%3D\""
 	if got != want {
 		t.Errorf("Authorization value got %v, want %v", got, want)
