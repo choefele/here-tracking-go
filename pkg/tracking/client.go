@@ -74,7 +74,7 @@ func (c *Client) newRequest(method string, path string, body interface{}) (*http
 	}
 
 	if c.AccessToken != nil {
-		// req.Header.Set("Authorization", "Bearer "+*c.AccessToken)
+		req.Header.Set("Authorization", "Bearer "+*c.AccessToken)
 	}
 
 	return req, nil
