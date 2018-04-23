@@ -31,6 +31,39 @@ func TestNewClient(t *testing.T) {
 	}
 }
 
+func TestRequest(t *testing.T) {
+	client, mux, teardown := setupTestServer()
+	defer teardown()
+
+	mux.HandleFunc("/path", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "POST")
+		testBody(t, r, `"request"`+"\n")
+
+		fmt.Fprint(w, `"response"`)
+	})
+
+	var result string
+	err := client.request(
+		context.Background(),
+		&request{
+			path:   "/path",
+			method: "POST",
+			body:   "request",
+		},
+		&response{
+			body: &result,
+		},
+	)
+
+	if err != nil {
+		t.Error("Expected no error")
+	}
+
+	if got, want := result, "response"; got != want {
+		t.Errorf("request returned %v, want %v", got, want)
+	}
+}
+
 func TestNewRequest(t *testing.T) {
 	c := NewClient("", "")
 
@@ -61,7 +94,7 @@ func TestNewRequest_invalidJSON(t *testing.T) {
 	_, err := c.newRequest("GET", ".", &T{}, nil)
 
 	if err == nil {
-		t.Error("Expected error to be returned.")
+		t.Error("Expected error to be returned")
 	}
 	if err, ok := err.(*json.UnsupportedTypeError); !ok {
 		t.Errorf("Expected a JSON error; got %#v.", err)
@@ -73,22 +106,12 @@ func TestNewRequest_badURL(t *testing.T) {
 	_, err := c.newRequest("GET", ":", nil, nil)
 
 	if err == nil {
-		t.Error("Expected error to be returned.")
+		t.Error("Expected error to be returned")
 	}
 	if err, ok := err.(*url.Error); !ok || err.Op != "parse" {
 		t.Errorf("Expected URL parse error, got %+v", err)
 	}
 }
-
-// func TestNewRequest_authorization(t *testing.T) {
-// 	c := NewClient()
-
-// 	token := "token"
-// 	c.AccessToken = &token
-// 	r, _ := c.newRequest("GET", ".", nil, nil)
-
-// 	testHeader(t, r, "Authorization", "Bearer token")
-// }
 
 func TestDo(t *testing.T) {
 	client, mux, teardown := setupTestServer()
@@ -125,9 +148,9 @@ func TestDo_httpError(t *testing.T) {
 	resp, err := client.do(context.Background(), req, nil)
 
 	if err == nil {
-		t.Fatal("Expected HTTP 400 error, got no error.")
+		t.Fatal("Expected HTTP 400 error, got no error")
 	}
 	if resp.StatusCode != 400 {
-		t.Errorf("Expected HTTP 400 error, got %d status code.", resp.StatusCode)
+		t.Errorf("Expected HTTP 400 error, got %d status code", resp.StatusCode)
 	}
 }
