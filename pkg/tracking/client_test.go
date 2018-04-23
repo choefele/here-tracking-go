@@ -12,7 +12,7 @@ import (
 )
 
 func TestNewClient(t *testing.T) {
-	c := NewClient("", "")
+	c := NewClient("deviceID", "deviceSecret")
 
 	if got, want := c.BaseURL.String(), "https://tracking.api.here.com"; got != want {
 		t.Errorf("NewClient BaseURL is %v, want %v", got, want)
@@ -22,6 +22,12 @@ func TestNewClient(t *testing.T) {
 	}
 	if got := c.Ingestion; got == nil {
 		t.Errorf("NewClient ingestion service is nil")
+	}
+	if got, want := c.DeviceID, "deviceID"; got != want {
+		t.Errorf("NewClient device ID is %v, want %v", got, want)
+	}
+	if got, want := c.DeviceSecret, "deviceSecret"; got != want {
+		t.Errorf("NewClient device secret is %v, want %v", got, want)
 	}
 }
 
