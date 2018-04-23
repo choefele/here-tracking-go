@@ -6,7 +6,11 @@
             "type": "go",
             "request": "launch",
             "mode": "debug",
-            "program": "${workspaceFolder}/cmd/ingest/main.go"
+            "program": "${workspaceFolder}/cmd/ingest/main.go",
+            "args": [
+                "9d9c31be-dd5d-40b1-95af-7d5375c39561",
+		        "vHrFUhnxo0hxw2VqR5OXBBnvjeTK0T8etmws8HZ9dvw"
+            ]
         },
         {
             "name": "Ingest proxy",
@@ -17,7 +21,11 @@
             "env": {
                 "HTTP_PROXY": "http://localhost:8888",
                 "HTTPS_PROXY": "http://localhost:8888"
-            }
+            },
+            "args": [
+                "9d9c31be-dd5d-40b1-95af-7d5375c39561",
+		        "vHrFUhnxo0hxw2VqR5OXBBnvjeTK0T8etmws8HZ9dvw"
+            ]
         }
    ]
 }

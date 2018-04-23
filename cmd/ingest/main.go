@@ -3,19 +3,19 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/choefele/here-tracking-go/pkg/tracking"
 )
 
 func main() {
-	client := tracking.NewClient(
-		"9d9c31be-dd5d-40b1-95af-7d5375c39561",
-		"vHrFUhnxo0hxw2VqR5OXBBnvjeTK0T8etmws8HZ9dvw",
-	)
-	h, e := client.Ingestion.Health(context.Background())
-	fmt.Printf("Health: %v, error: %v\n", h, e)
+	if len(os.Args) < 3 {
+		fmt.Println("Usage: ingest device_id device_secret")
+		os.Exit(-1)
+	}
 
+	client := tracking.NewClient(os.Args[1], os.Args[2])
 	dr := &tracking.DataRequest{
 		Timestamp: tracking.Time{Time: time.Now()},
 		Position: &tracking.Position{
@@ -24,6 +24,6 @@ func main() {
 			Accuracy: 100,
 		},
 	}
-	e = client.Ingestion.Send(context.Background(), []*tracking.DataRequest{dr})
-	fmt.Printf("Send: done, error: %v\n", e)
+	err := client.Ingestion.Send(context.Background(), []*tracking.DataRequest{dr})
+	fmt.Printf("Send: done, error: %v\n", err)
 }
