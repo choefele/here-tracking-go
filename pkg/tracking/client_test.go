@@ -64,6 +64,28 @@ func TestRequest(t *testing.T) {
 	}
 }
 
+func TestAuthorizedRequest(t *testing.T) {
+	client, mux, teardown := setupTestServer()
+	defer teardown()
+
+	token := "access-token"
+	client.AccessToken = &token
+
+	mux.HandleFunc("/path", func(w http.ResponseWriter, r *http.Request) {
+		testHeader(t, r, "Authorization", "Bearer access-token")
+		w.WriteHeader(http.StatusOK)
+	})
+
+	client.authorizedClient().request(
+		context.Background(),
+		&request{
+			path:   "/path",
+			method: "POST",
+		},
+		&response{},
+	)
+}
+
 func TestNewRequest(t *testing.T) {
 	c := NewClient("", "")
 
