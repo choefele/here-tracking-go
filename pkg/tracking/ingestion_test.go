@@ -40,13 +40,9 @@ func TestIngestion_Send(t *testing.T) {
 			Accuracy: 100,
 		},
 	}
-	got, err := client.Ingestion.Send(context.Background(), []*DataRequest{dr})
+	err := client.Ingestion.Send(context.Background(), []*DataRequest{dr})
 	if err != nil {
 		t.Errorf("Ingestion.Send returned error: %v", err)
-	}
-	want := &Health{Message: "healthy"}
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("Response is %v, want %v", got, want)
 	}
 }
 

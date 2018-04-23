@@ -21,7 +21,7 @@ type Position struct {
 	Accuracy float64 `json:"accuracy,omitempty"`
 }
 
-func (s *IngestionService) Send(ctx context.Context, data []*DataRequest) (*Health, error) {
+func (s *IngestionService) Send(ctx context.Context, data []*DataRequest) error {
 	result := new(Health)
 	err := s.client.authorizedClient().request(
 		ctx,
@@ -36,9 +36,9 @@ func (s *IngestionService) Send(ctx context.Context, data []*DataRequest) (*Heal
 	)
 
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return result, nil
+	return nil
 }
 
 type Token struct {

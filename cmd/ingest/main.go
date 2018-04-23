@@ -24,6 +24,6 @@ func main() {
 			Accuracy: 100,
 		},
 	}
-	d, e := client.Ingestion.Send(context.Background(), []*tracking.DataRequest{dr})
-	fmt.Printf("Send: %v, error: %v\n", d, e)
+	e = client.Ingestion.Send(context.Background(), []*tracking.DataRequest{dr})
+	fmt.Printf("Send: done, error: %v\n", e)
 }
