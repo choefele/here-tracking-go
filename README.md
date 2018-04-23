@@ -22,11 +22,13 @@ Install with `go get`:
 $ go get -u github.com/choefele/here-tracking-go/cmd/ingest
 ```
 
-The run the `ingest` providing the device ID and secret:
+Then run `ingest` providing the device ID and secret:
 
 ```
 $ ingest <device ID> <device secret>
 ```
+
+This will send test location data to the HERE Tracking Service, which you can monitor in the [admin console](https://app.tracking.here.com/).
 
  ## Usage
  ```go
