@@ -4,7 +4,7 @@ here-tracking-go is a Go client library for accessing the [HERE Tracking API v2]
 Note: the implementation's interfaces aren't final yet – expect changes
 
 ## Credentials
-To use the sample application, or any application created with the HERE Tracking Client C Library, you need to:
+To use the sample application, or any application created with the ingestion API, you need to:
 
 1. Sign up for a developer account with HERE Tracking.
 2. In the vendor role, create some devices with device licenses.
@@ -42,4 +42,4 @@ h, err := client.Ingestion.Health(context.Background())
 fmt.Printf("Health: %v, error: %v\n", h, err)
 ```
 
-The services of a client divide the API into logical chunks and correspond to the structure of the [HERE Tracking API v2](https://developer.here.com/documentation/tracking/api-reference-swagger.html.
+The services of a client divide the API into logical chunks and correspond to the structure of the [HERE Tracking API v2](https://developer.here.com/documentation/tracking/api-reference-swagger.html).
