@@ -141,7 +141,7 @@ func TestDo_httpError(t *testing.T) {
 	defer teardown()
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.Error(w, "Bad Request", 400)
+		w.WriteHeader(http.StatusBadRequest)
 	})
 
 	req, _ := client.newRequest("GET", ".", nil, nil)
@@ -150,7 +150,7 @@ func TestDo_httpError(t *testing.T) {
 	if err == nil {
 		t.Fatal("Expected HTTP 400 error, got no error")
 	}
-	if resp.StatusCode != 400 {
+	if resp.StatusCode != http.StatusBadRequest {
 		t.Errorf("Expected HTTP 400 error, got %d status code", resp.StatusCode)
 	}
 }
