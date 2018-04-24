@@ -64,6 +64,28 @@ func TestRequest(t *testing.T) {
 	}
 }
 
+func TestRequest_error(t *testing.T) {
+	client, mux, teardown := setupTestServer()
+	defer teardown()
+
+	mux.HandleFunc("/path", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusBadRequest)
+	})
+
+	err := client.request(
+		context.Background(),
+		&request{
+			path:   "/path",
+			method: http.MethodPost,
+		},
+		&response{},
+	)
+
+	if err == nil {
+		t.Error("Expected error")
+	}
+}
+
 func TestAuthorizedRequest(t *testing.T) {
 	client, mux, teardown := setupTestServer()
 	defer teardown()

@@ -70,9 +70,14 @@ func (c *Client) request(ctx context.Context, request *request, response *respon
 		return err
 	}
 
-	_, err = c.do(ctx, req, response.body)
+	resp, err := c.do(ctx, req, response.body)
 	if err != nil {
 		return err
+	}
+
+	// Treat response codes != 2xx as error
+	if resp.StatusCode < http.StatusOK || resp.StatusCode >= http.StatusMultipleChoices {
+		return fmt.Errorf("HTTP status %v", resp.Status)
 	}
 
 	return nil
