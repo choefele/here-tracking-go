@@ -117,7 +117,7 @@ func (c *Client) newRequest(method string, path string, body interface{}, header
 	return req, nil
 }
 
-func (c *Client) do(ctx context.Context, req *http.Request, v interface{}) (*http.Response, error) {
+func (c *Client) do(ctx context.Context, req *http.Request, body interface{}) (*http.Response, error) {
 	req = req.WithContext(ctx)
 
 	resp, err := c.httpClient.Do(req)
@@ -134,8 +134,8 @@ func (c *Client) do(ctx context.Context, req *http.Request, v interface{}) (*htt
 	}
 	defer resp.Body.Close()
 
-	if v != nil {
-		err = json.NewDecoder(resp.Body).Decode(v)
+	if body != nil {
+		err = json.NewDecoder(resp.Body).Decode(body)
 	}
 	return resp, err
 }
