@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"fmt"
+	"net/http"
 	"net/url"
 	"path"
 )
@@ -29,7 +30,7 @@ func baseString(baseURL url.URL, servicePath, parameterString string) string {
 	u, _ := url.Parse(path.Join(servicePath, "/token"))
 	baseURLAsString := baseURL.ResolveReference(u).String()
 
-	baseString += "POST"
+	baseString += http.MethodPost
 	baseString += fmt.Sprintf("&%v", url.QueryEscape(baseURLAsString))
 	baseString += fmt.Sprintf("&%v", url.QueryEscape(parameterString))
 

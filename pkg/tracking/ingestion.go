@@ -2,6 +2,7 @@ package tracking
 
 import (
 	"context"
+	"net/http"
 	"path"
 	"time"
 )
@@ -27,7 +28,7 @@ func (s *IngestionService) Send(ctx context.Context, data []*DataRequest) error 
 		ctx,
 		&request{
 			path:   path.Join(s.path, "") + "/", // trailing slash is important
-			method: "POST",
+			method: http.MethodPost,
 			body:   data,
 		},
 		&response{
@@ -61,7 +62,7 @@ func (s *IngestionService) Token(ctx context.Context, deviceID string, deviceSec
 		ctx,
 		&request{
 			path:    path.Join(s.path, "/token"),
-			method:  "POST",
+			method:  http.MethodPost,
 			headers: headers,
 		},
 		&response{

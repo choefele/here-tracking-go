@@ -27,7 +27,7 @@ func TestIngestion_Send(t *testing.T) {
 	defer teardown()
 
 	mux.HandleFunc(path.Join(client.Ingestion.path, "")+"/", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testBody(t, r, `[{"position":{"lat":52,"lng":13,"accuracy":100},"timestamp":86399}]`+"\n")
 		fmt.Fprint(w, `{"message":"healthy"}`)
 	})
@@ -51,7 +51,7 @@ func TestIngestion_Token(t *testing.T) {
 	defer teardown()
 
 	mux.HandleFunc(path.Join(client.Ingestion.path, "/token"), func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testBody(t, r, "")
 
 		if got, want := r.Header.Get("Authorization"), "OAuth realm="; !strings.HasPrefix(got, want) {

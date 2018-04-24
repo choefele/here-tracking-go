@@ -36,7 +36,7 @@ func TestRequest(t *testing.T) {
 	defer teardown()
 
 	mux.HandleFunc("/path", func(w http.ResponseWriter, r *http.Request) {
-		testMethod(t, r, "POST")
+		testMethod(t, r, http.MethodPost)
 		testBody(t, r, `"request"`+"\n")
 
 		fmt.Fprint(w, `"response"`)
@@ -47,7 +47,7 @@ func TestRequest(t *testing.T) {
 		context.Background(),
 		&request{
 			path:   "/path",
-			method: "POST",
+			method: http.MethodPost,
 			body:   "request",
 		},
 		&response{
@@ -80,7 +80,7 @@ func TestAuthorizedRequest(t *testing.T) {
 		context.Background(),
 		&request{
 			path:   "/path",
-			method: "POST",
+			method: http.MethodPost,
 		},
 		&response{},
 	)
