@@ -26,6 +26,32 @@
                 "9d9c31be-dd5d-40b1-95af-7d5375c39561",
 		        "vHrFUhnxo0hxw2VqR5OXBBnvjeTK0T8etmws8HZ9dvw"
             ]
+        },
+        {
+            "name": "User",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}/cmd/user/main.go",
+            "args": [
+                "email",
+		        "password"
+            ]
+        },
+        {
+            "name": "User proxy",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}/cmd/user/main.go",
+            "env": {
+                "HTTP_PROXY": "http://localhost:8888",
+                "HTTPS_PROXY": "http://localhost:8888"
+            },
+            "args": [
+                "email",
+		        "password"
+            ]
         }
    ]
 }

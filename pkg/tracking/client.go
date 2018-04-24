@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -20,7 +21,10 @@ type Client struct {
 	DeviceID     string
 	DeviceSecret string
 
+	UserAccessToken *string
+
 	Ingestion *IngestionService
+	User      *UserService
 }
 
 func NewClient(deviceID string, deviceSecret string) *Client {
@@ -40,6 +44,7 @@ func newClientWithParameters(httpClient *http.Client, baseURL string, deviceID s
 
 	c := &Client{httpClient: httpClient, BaseURL: *url, DeviceID: deviceID, DeviceSecret: deviceSecret}
 	c.Ingestion = &IngestionService{&service{client: c, path: "/v2"}}
+	c.User = &UserService{&service{client: c, path: "/users/v2"}}
 
 	return c, nil
 }
@@ -58,7 +63,11 @@ func (c *Client) authorizedClient() requester {
 		if request.headers == nil {
 			request.headers = map[string]string{}
 		}
-		request.headers["Authorization"] = "Bearer " + *c.AccessToken
+		if c.UserAccessToken != nil {
+			request.headers["Authorization"] = *c.UserAccessToken
+		} else {
+			request.headers["Authorization"] = "Bearer " + *c.AccessToken
+		}
 
 		return c.request(ctx, request, response)
 	})
