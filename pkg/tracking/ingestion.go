@@ -23,7 +23,6 @@ type Position struct {
 }
 
 func (s *IngestionService) Send(ctx context.Context, data []*DataRequest) error {
-	result := new(Health)
 	err := s.client.authorizedClient().request(
 		ctx,
 		&request{
@@ -31,9 +30,7 @@ func (s *IngestionService) Send(ctx context.Context, data []*DataRequest) error 
 			method: http.MethodPost,
 			body:   data,
 		},
-		&response{
-			body: result,
-		},
+		&response{},
 	)
 
 	if err != nil {
