@@ -11,7 +11,7 @@ type UserService struct {
 }
 
 func (s *UserService) ListDevices(ctx context.Context) error {
-	err := s.client.authorizedClient().request(
+	err := s.client.authorizedRequest(
 		ctx,
 		&request{
 			path:   path.Join(s.path, "devices"),

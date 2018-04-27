@@ -23,7 +23,7 @@ type Position struct {
 }
 
 func (s *IngestionService) Send(ctx context.Context, data []*DataRequest) error {
-	err := s.client.authorizedClient().request(
+	err := s.client.authorizedRequest(
 		ctx,
 		&request{
 			path:   path.Join(s.path, "") + "/", // trailing slash is important

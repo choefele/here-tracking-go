@@ -7,15 +7,33 @@ import (
 	"testing"
 )
 
-// setup sets up a test HTTP server along with a github.Client that is
+func setupTestDeviceClient() (*DeviceClient, *http.ServeMux, func()) {
+	mux := http.NewServeMux()
+	server := httptest.NewServer(mux)
+	deviceClient := newDeviceClientWithParameters(&server.URL, "", "")
+	token := "token"
+	deviceClient.AccessToken = &token
+
+	return deviceClient, mux, server.Close
+}
+
+func setupTestUserClient() (*UserClient, *http.ServeMux, func()) {
+	mux := http.NewServeMux()
+	server := httptest.NewServer(mux)
+	userClient := newUserClientWithParameters(&server.URL, "", "")
+	token := "token"
+	userClient.AccessToken = &token
+
+	return userClient, mux, server.Close
+}
+
+// setup sets up a test HTTP server along with a tracking.client that is
 // configured to talk to that test server. Tests should register handlers on
 // mux which provide mock responses for the API method being tested.
-func setupTestServer() (client *Client, mux *http.ServeMux, teardown func()) {
-	mux = http.NewServeMux()
+func setupTestClient() (*client, *http.ServeMux, func()) {
+	mux := http.NewServeMux()
 	server := httptest.NewServer(mux)
-	client, _ = newClientWithParameters(nil, server.URL, "", "")
-	token := "token"
-	client.AccessToken = &token
+	client, _ := newClientWithParameters(nil, &server.URL, nil)
 
 	return client, mux, server.Close
 }

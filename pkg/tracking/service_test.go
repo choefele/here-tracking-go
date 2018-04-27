@@ -10,7 +10,7 @@ import (
 )
 
 func TestService_Health(t *testing.T) {
-	client, mux, teardown := setupTestServer()
+	client, mux, teardown := setupTestDeviceClient()
 	service := client.Ingestion.service
 	defer teardown()
 

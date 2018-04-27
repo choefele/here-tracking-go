@@ -14,16 +14,7 @@ func main() {
 		os.Exit(-1)
 	}
 
-	client := tracking.NewClient("", "")
-
-	t, err := client.User.Login(context.Background(), os.Args[1], os.Args[2])
-	fmt.Printf("Login: %v, error: %v\n", t, err)
-	if err != nil {
-		os.Exit(-1)
-	}
-
-	client.AccessToken = &t.AccessToken // fake
-	client.UserAccessToken = &t.AccessToken
-	err = client.User.ListDevices(context.Background())
+	client := tracking.NewUserClient(os.Args[1], os.Args[2])
+	err := client.User.ListDevices(context.Background())
 	fmt.Printf("ListDevices: done, error: %v\n", err)
 }

@@ -6,7 +6,7 @@ import (
 )
 
 type service struct {
-	client *Client
+	client *client
 	path   string
 }
 

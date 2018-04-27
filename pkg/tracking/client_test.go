@@ -11,28 +11,26 @@ import (
 	"testing"
 )
 
-func TestNewClient(t *testing.T) {
-	c := NewClient("deviceID", "deviceSecret")
+func TestClientWithParameters(t *testing.T) {
+	r := func(ctx context.Context, request *request, response *response) error { return nil }
+	c, err := newClientWithParameters(nil, nil, r)
 
+	if err != nil {
+		t.Error("Expected no error")
+	}
 	if got, want := c.BaseURL.String(), "https://tracking.api.here.com"; got != want {
-		t.Errorf("NewClient BaseURL is %v, want %v", got, want)
+		t.Errorf("Client BaseURL is %v, want %v", got, want)
 	}
 	if got := c.httpClient; got == nil {
-		t.Errorf("NewClient HTTP client is nil")
+		t.Errorf("Client HTTP client is nil")
 	}
-	if got := c.Ingestion; got == nil {
-		t.Errorf("NewClient ingestion service is nil")
-	}
-	if got, want := c.DeviceID, "deviceID"; got != want {
-		t.Errorf("NewClient device ID is %v, want %v", got, want)
-	}
-	if got, want := c.DeviceSecret, "deviceSecret"; got != want {
-		t.Errorf("NewClient device secret is %v, want %v", got, want)
+	if got := c.authorizedRequest; got == nil {
+		t.Errorf("Client authorizedRequest is nil")
 	}
 }
 
 func TestRequest(t *testing.T) {
-	client, mux, teardown := setupTestServer()
+	client, mux, teardown := setupTestClient()
 	defer teardown()
 
 	mux.HandleFunc("/path", func(w http.ResponseWriter, r *http.Request) {
@@ -60,12 +58,12 @@ func TestRequest(t *testing.T) {
 	}
 
 	if got, want := result, "response"; got != want {
-		t.Errorf("request returned %v, want %v", got, want)
+		t.Errorf("Request returned %v, want %v", got, want)
 	}
 }
 
 func TestRequest_error(t *testing.T) {
-	client, mux, teardown := setupTestServer()
+	client, mux, teardown := setupTestClient()
 	defer teardown()
 
 	mux.HandleFunc("/path", func(w http.ResponseWriter, r *http.Request) {
@@ -86,30 +84,8 @@ func TestRequest_error(t *testing.T) {
 	}
 }
 
-func TestAuthorizedRequest(t *testing.T) {
-	client, mux, teardown := setupTestServer()
-	defer teardown()
-
-	token := "access-token"
-	client.AccessToken = &token
-
-	mux.HandleFunc("/path", func(w http.ResponseWriter, r *http.Request) {
-		testHeader(t, r, "Authorization", "Bearer access-token")
-		w.WriteHeader(http.StatusOK)
-	})
-
-	client.authorizedClient().request(
-		context.Background(),
-		&request{
-			path:   "/path",
-			method: http.MethodPost,
-		},
-		&response{},
-	)
-}
-
 func TestNewRequest(t *testing.T) {
-	c := NewClient("", "")
+	c, _ := newClientWithParameters(nil, nil, nil)
 
 	in := map[string]interface{}{
 		"a": 3711,
@@ -130,7 +106,7 @@ func TestNewRequest(t *testing.T) {
 }
 
 func TestNewRequest_invalidJSON(t *testing.T) {
-	c := NewClient("", "")
+	c, _ := newClientWithParameters(nil, nil, nil)
 
 	type T struct {
 		A map[interface{}]interface{}
@@ -146,7 +122,7 @@ func TestNewRequest_invalidJSON(t *testing.T) {
 }
 
 func TestNewRequest_badURL(t *testing.T) {
-	c := NewClient("", "")
+	c, _ := newClientWithParameters(nil, nil, nil)
 	_, err := c.newRequest("GET", ":", nil, nil)
 
 	if err == nil {
@@ -158,7 +134,7 @@ func TestNewRequest_badURL(t *testing.T) {
 }
 
 func TestDo(t *testing.T) {
-	client, mux, teardown := setupTestServer()
+	client, mux, teardown := setupTestClient()
 	defer teardown()
 
 	type foo struct {
@@ -181,7 +157,7 @@ func TestDo(t *testing.T) {
 }
 
 func TestDo_httpError(t *testing.T) {
-	client, mux, teardown := setupTestServer()
+	client, mux, teardown := setupTestClient()
 	defer teardown()
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {

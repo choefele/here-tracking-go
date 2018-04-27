@@ -15,7 +15,7 @@ func main() {
 		os.Exit(-1)
 	}
 
-	client := tracking.NewClient(os.Args[1], os.Args[2])
+	client := tracking.NewDeviceClient(os.Args[1], os.Args[2])
 	dr := &tracking.DataRequest{
 		Timestamp: tracking.Time{Time: time.Now()},
 		Position: &tracking.Position{

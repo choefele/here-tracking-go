@@ -12,7 +12,7 @@ import (
 )
 
 func TestIngestion(t *testing.T) {
-	c := NewClient("", "")
+	c := NewDeviceClient("", "")
 
 	if got := c.Ingestion.client; got == nil {
 		t.Errorf("Ingestion service client is nil")
@@ -23,7 +23,7 @@ func TestIngestion(t *testing.T) {
 }
 
 func TestIngestion_Send(t *testing.T) {
-	client, mux, teardown := setupTestServer()
+	client, mux, teardown := setupTestDeviceClient()
 	defer teardown()
 
 	mux.HandleFunc(path.Join(client.Ingestion.path, "")+"/", func(w http.ResponseWriter, r *http.Request) {
@@ -47,7 +47,7 @@ func TestIngestion_Send(t *testing.T) {
 }
 
 func TestIngestion_Token(t *testing.T) {
-	client, mux, teardown := setupTestServer()
+	client, mux, teardown := setupTestDeviceClient()
 	defer teardown()
 
 	mux.HandleFunc(path.Join(client.Ingestion.path, "/token"), func(w http.ResponseWriter, r *http.Request) {
