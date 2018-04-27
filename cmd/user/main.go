@@ -14,7 +14,7 @@ func main() {
 		os.Exit(-1)
 	}
 
-	client := tracking.NewUserClient(os.Args[1], os.Args[2])
+	client := tracking.NewAdminClient(os.Args[1], os.Args[2])
 	err := client.User.ListDevices(context.Background())
 	fmt.Printf("ListDevices: done, error: %v\n", err)
 }

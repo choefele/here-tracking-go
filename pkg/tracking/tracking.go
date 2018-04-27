@@ -51,7 +51,7 @@ func authorizedDeviceRequesterFunc(c *DeviceClient) requesterFunc {
 	})
 }
 
-type UserClient struct {
+type AdminClient struct {
 	*client
 
 	Email       string
@@ -61,24 +61,24 @@ type UserClient struct {
 	User *UserService
 }
 
-func NewUserClient(email string, password string) *UserClient {
-	return newUserClientWithParameters(nil, email, password)
+func NewAdminClient(email string, password string) *AdminClient {
+	return newAdminClientWithParameters(nil, email, password)
 }
 
-func newUserClientWithParameters(baseURL *string, email string, password string) *UserClient {
-	userClient := &UserClient{
+func newAdminClientWithParameters(baseURL *string, email string, password string) *AdminClient {
+	adminClient := &AdminClient{
 		Email:    email,
 		Password: password,
 	}
 
-	client, _ := newClientWithParameters(nil, baseURL, authorizedUserRequesterFunc(userClient))
-	userClient.client = client
-	userClient.User = &UserService{&service{client: client, path: "/users/v2"}}
+	client, _ := newClientWithParameters(nil, baseURL, authorizedUserRequesterFunc(adminClient))
+	adminClient.client = client
+	adminClient.User = &UserService{&service{client: client, path: "/users/v2"}}
 
-	return userClient
+	return adminClient
 }
 
-func authorizedUserRequesterFunc(c *UserClient) requesterFunc {
+func authorizedUserRequesterFunc(c *AdminClient) requesterFunc {
 	return requesterFunc(func(ctx context.Context, request *request, response *response) error {
 		if c.AccessToken == nil {
 			token, err := c.User.Login(ctx, c.Email, c.Password)

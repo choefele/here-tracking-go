@@ -17,14 +17,14 @@ func setupTestDeviceClient() (*DeviceClient, *http.ServeMux, func()) {
 	return deviceClient, mux, server.Close
 }
 
-func setupTestUserClient() (*UserClient, *http.ServeMux, func()) {
+func setupTestAdminClient() (*AdminClient, *http.ServeMux, func()) {
 	mux := http.NewServeMux()
 	server := httptest.NewServer(mux)
-	userClient := newUserClientWithParameters(&server.URL, "", "")
+	adminClient := newAdminClientWithParameters(&server.URL, "", "")
 	token := "token"
-	userClient.AccessToken = &token
+	adminClient.AccessToken = &token
 
-	return userClient, mux, server.Close
+	return adminClient, mux, server.Close
 }
 
 // setup sets up a test HTTP server along with a tracking.client that is

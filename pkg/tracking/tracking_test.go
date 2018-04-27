@@ -45,8 +45,8 @@ func TestDeviceClientAuthorizedRequest(t *testing.T) {
 	)
 }
 
-func TestUserClient(t *testing.T) {
-	c := NewUserClient("email", "password")
+func TestAdminClient(t *testing.T) {
+	c := NewAdminClient("email", "password")
 
 	if got, want := c.Email, "email"; got != want {
 		t.Errorf("Email is %v, want %v", got, want)
@@ -65,8 +65,8 @@ func TestUserClient(t *testing.T) {
 	}
 }
 
-func TestUserClientAuthorizedRequest(t *testing.T) {
-	client, mux, teardown := setupTestUserClient()
+func TestAdminClientAuthorizedRequest(t *testing.T) {
+	client, mux, teardown := setupTestAdminClient()
 	defer teardown()
 
 	token := "access-token"

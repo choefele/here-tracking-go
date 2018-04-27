@@ -11,7 +11,7 @@ import (
 )
 
 func TestUser(t *testing.T) {
-	c := NewUserClient("", "")
+	c := NewAdminClient("", "")
 
 	if got := c.User.client; got == nil {
 		t.Errorf("User service client is nil")
@@ -22,7 +22,7 @@ func TestUser(t *testing.T) {
 }
 
 func TestUser_ListDevices(t *testing.T) {
-	client, mux, teardown := setupTestUserClient()
+	client, mux, teardown := setupTestAdminClient()
 	defer teardown()
 
 	mux.HandleFunc(path.Join(client.User.path, "/devices"), func(w http.ResponseWriter, r *http.Request) {
@@ -39,7 +39,7 @@ func TestUser_ListDevices(t *testing.T) {
 }
 
 func TestUser_Login(t *testing.T) {
-	client, mux, teardown := setupTestUserClient()
+	client, mux, teardown := setupTestAdminClient()
 	defer teardown()
 
 	mux.HandleFunc(path.Join(client.User.path, "/login"), func(w http.ResponseWriter, r *http.Request) {
