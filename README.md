@@ -59,3 +59,39 @@ func main() {
 }
 ```
 
+## Admin Client
+
+### Building the Sample Application
+You'll need a valid `$GOPATH` and working Go setup. Then install with `go get`:
+
+```
+$ go get -u github.com/choefele/here-tracking-go/cmd/admin
+```
+
+Run `admin` providing your email and password:
+
+```
+$ admin <email> <password>
+```
+
+This will list your devices.
+
+## Usage
+ ```go
+import "github.com/choefele/here-tracking-go/pkg/tracking"
+```
+
+Construct a new client, then use the various services on the client to access different parts of the API. For example:
+
+```go
+func main() {
+	if len(os.Args) < 3 {
+		fmt.Println("Usage: admin email password")
+		os.Exit(-1)
+	}
+
+	client := tracking.NewAdminClient(os.Args[1], os.Args[2])
+	err := client.User.ListDevices(context.Background())
+	fmt.Printf("ListDevices: done, error: %v\n", err)
+}
+```
