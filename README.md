@@ -31,7 +31,7 @@ $ ingest <device ID> <device secret>
 
 This will send test location data to the HERE Tracking Service, which you can monitor in the [admin console](https://app.tracking.here.com/).
 
-## Usage
+### Usage
  ```go
 import "github.com/choefele/here-tracking-go/pkg/tracking"
 ```
@@ -76,7 +76,7 @@ $ admin <email> <password>
 
 This will list your devices.
 
-## Usage
+### Usage
  ```go
 import "github.com/choefele/here-tracking-go/pkg/tracking"
 ```
