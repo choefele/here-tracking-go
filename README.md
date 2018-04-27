@@ -3,8 +3,10 @@ here-tracking-go is a Go client library for accessing the [HERE Tracking API v2]
 
 Note: the implementation's interfaces aren't final yet – expect changes
 
-## Credentials
-To use the sample application, or any application created with the ingestion API, you need to:
+## Device Client
+
+### Credentials
+To use the device client, you need to:
 
 1. Sign up for a developer account with HERE Tracking.
 2. In the vendor role, create some devices with device licenses.
@@ -12,10 +14,9 @@ To use the sample application, or any application created with the ingestion API
 
 The device licenses include device IDs and device secrets.
 
-## Building the Sample Applications
+### Building the Sample Application
 You'll need a valid `$GOPATH` and working Go setup.
 
-### Ingest
 Install with `go get`:
 
 ```
@@ -30,7 +31,7 @@ $ ingest <device ID> <device secret>
 
 This will send test location data to the HERE Tracking Service, which you can monitor in the [admin console](https://app.tracking.here.com/).
 
- ## Usage
+## Usage
  ```go
 import "github.com/choefele/here-tracking-go/pkg/tracking"
 ```
@@ -44,7 +45,7 @@ func main() {
 		os.Exit(-1)
 	}
 
-	client := tracking.NewClient(os.Args[1], os.Args[2])
+	client := tracking.NewDeviceClient(os.Args[1], os.Args[2])
 	dr := &tracking.DataRequest{
 		Timestamp: tracking.Time{Time: time.Now()},
 		Position: &tracking.Position{
