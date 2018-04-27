@@ -28,22 +28,22 @@
             ]
         },
         {
-            "name": "User",
+            "name": "Admin",
             "type": "go",
             "request": "launch",
             "mode": "debug",
-            "program": "${workspaceFolder}/cmd/user/main.go",
+            "program": "${workspaceFolder}/cmd/admin/main.go",
             "args": [
                 "email",
 		        "password"
             ]
         },
         {
-            "name": "User proxy",
+            "name": "Admin proxy",
             "type": "go",
             "request": "launch",
             "mode": "debug",
-            "program": "${workspaceFolder}/cmd/user/main.go",
+            "program": "${workspaceFolder}/cmd/admin/main.go",
             "env": {
                 "HTTP_PROXY": "http://localhost:8888",
                 "HTTPS_PROXY": "http://localhost:8888"

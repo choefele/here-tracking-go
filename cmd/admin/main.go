@@ -10,7 +10,7 @@ import (
 
 func main() {
 	if len(os.Args) < 3 {
-		fmt.Println("Usage: user email password")
+		fmt.Println("Usage: admin email password")
 		os.Exit(-1)
 	}
 
