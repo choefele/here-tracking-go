@@ -3,8 +3,9 @@ here-tracking-go is a Go client library for accessing the [HERE Tracking API v2]
 
 Note: the implementation's interfaces aren't final yet – expect changes
 
+This libary provides a client for devices to send new location data and a client for programmatically accessing the admin API. The services of each client divide the API into logical chunks and correspond to the structure of the [HERE Tracking API v2](https://developer.here.com/documentation/tracking/api-reference-swagger.html).
+
 ## Device Client
-The device client is what you'd use to ingest new data.
 
 ### Credentials
 To use the device client:
@@ -58,4 +59,3 @@ func main() {
 }
 ```
 
-The services of a client divide the API into logical chunks and correspond to the structure of the [HERE Tracking API v2](https://developer.here.com/documentation/tracking/api-reference-swagger.html).
