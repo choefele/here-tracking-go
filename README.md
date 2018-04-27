@@ -4,26 +4,25 @@ here-tracking-go is a Go client library for accessing the [HERE Tracking API v2]
 Note: the implementation's interfaces aren't final yet – expect changes
 
 ## Device Client
+The device client is what you'd use to ingest new data.
 
 ### Credentials
-To use the device client, you need to:
+To use the device client:
 
-1. Sign up for a developer account with HERE Tracking.
+1. Sign up for a [developer account with HERE Tracking](https://app.tracking.here.com).
 2. In the vendor role, create some devices with device licenses.
 3. In the user role, claim those devices.
 
-The device licenses include device IDs and device secrets.
+The device license includes device ID and device secret.
 
 ### Building the Sample Application
-You'll need a valid `$GOPATH` and working Go setup.
-
-Install with `go get`:
+You'll need a valid `$GOPATH` and working Go setup. Then install with `go get`:
 
 ```
 $ go get -u github.com/choefele/here-tracking-go/cmd/ingest
 ```
 
-Then run `ingest` providing the device ID and secret:
+Run `ingest` providing the device ID and secret:
 
 ```
 $ ingest <device ID> <device secret>
