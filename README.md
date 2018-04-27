@@ -1,4 +1,6 @@
 # here-tracking-go
+![Travis Status](https://travis-ci.org/choefele/here-tracking-go.svg?branch=master)
+
 here-tracking-go is a Go client library for accessing the [HERE Tracking API v2](https://developer.here.com/documentation/tracking/api-reference-swagger.html).
 
 Note: the implementation's interfaces aren't final yet – expect changes
